@@ -19,15 +19,13 @@ add_spamhaus_ip_bans() {
 	# Make sure each entry isn't in our ignore_ips file
 	while read ipcidr x comment; do
 
-		#echo "$ipcidr"
-
 		if ! containsElement "$ipcidr" "${IGNOREIPS[@]}" ; then
 
-            if [ $DEBUGMODE ]; then
+			if [ $DEBUGMODE ]; then
 				echo "iptables -A INPUT -s $ipcidr -j DROP -m comment --comment \"spamhaus $comment\""
 			else
-                echo "LIVE IP: $ipcidr, Comment: $comment"
-				#iptables -A INPUT -s $ipcidr -j DROP -m comment --comment "spamhaus $comment" ;
+				#echo "LIVE IP: $ipcidr, Comment: $comment"
+				iptables -A INPUT -s $ipcidr -j DROP -m comment --comment "spamhaus $comment" ;
 			fi
 
 		fi
@@ -45,7 +43,7 @@ IGNOREIPS=()
 
 # @todo read in "ignore" file if exists to allow overrides
 if [ -f "$DIR/ignore_ips" ]; then
-    IFS=$'\n' read -d '' -r -a IGNOREIPS < "$DIR/ignore_ips"
+	IFS=$'\n' read -d '' -r -a IGNOREIPS < "$DIR/ignore_ips"
 fi
 
 # Make sure we can download the new list or exit
